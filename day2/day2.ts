@@ -62,11 +62,9 @@ function solve2(lines: string[], total = 0) {
 function parseGames(lines: string[]) {
   let games: Game[] = [];
   lines.forEach((line) => {
-    const arr = line.split(":");
-    const gameId = +arr[0].replace("Game ", "");
-    let game = new Game(gameId);
-
-    const setsraw = arr[1].split(";");
+    let [gameId, setsrawstring] = line.split(":");
+    let game = new Game(+gameId.replace("Game ", ""));
+    const setsraw = setsrawstring.split(";");
     setsraw.forEach((s) => {
       s = s.trim();
       game.sets.push(createSet(s));
@@ -82,18 +80,17 @@ function createSet(rawset: string) {
 
   gemsraw.forEach((gem) => {
     gem = gem.trim();
-    const amount = +gem.split(" ")[0];
-    const colour = gem.split(" ")[1];
+    const [amount, colour] = gem.split(" ");
 
     switch (colour) {
       case "red":
-        set.red = amount;
+        set.red = +amount;
         break;
       case "blue":
-        set.blue = amount;
+        set.blue = +amount;
         break;
       case "green":
-        set.green = amount;
+        set.green = +amount;
         break;
     }
   });
