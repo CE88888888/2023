@@ -1,0 +1,17 @@
+import { getExampleInput, getPuzzleInput } from "../helper/inputs";
+
+const example: string[] = getExampleInput(__dirname);
+const input: string[] = getPuzzleInput(__dirname);
+
+console.log(`Part 1 example: ${solve1(example)}`);
+console.log(`Part 1 solution: ${solve1(input)}`);
+console.log(`Part 2 example: ${solve2(example)}`);
+console.log(`Part 2 solution: ${solve2(input)}`);
+
+function solve1(lines: string[], sum = 0) {
+  return sum;
+}
+
+function solve2(lines: string[], sum = 0) {
+  return sum;
+}
