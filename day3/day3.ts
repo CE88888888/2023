@@ -39,6 +39,10 @@ function createGrid(lines: string[]) {
 
 function findParts(grid: string[][]) {
   let parts = [];
+  const checkfn = function (x: number, y: number) {
+    return isNaN(+grid[x][y]) && grid[x][y] !== ".";
+  };
+
   for (let r = 0; r < grid.length; r++) {
     let row = [...grid[r]];
     for (let c = 0; c < row.length; c++) {
@@ -47,12 +51,12 @@ function findParts(grid: string[][]) {
       if (!isNaN(+value)) {
         let symbolfound = false;
         partstring = partstring + value;
-        symbolfound = checkSurrounding(c, r, grid);
+        symbolfound = checkSurrounding(c, r, grid, checkfn);
         let i = c + 1;
         while (i < row.length && !isNaN(+row[i])) {
           if (!isNaN(+row[i])) {
             partstring = partstring + row[i];
-            if (checkSurrounding(c + 1, r, grid) && !symbolfound) {
+            if (checkSurrounding(c + 1, r, grid, checkfn) && !symbolfound) {
               symbolfound = true;
             }
             i++;
@@ -72,6 +76,10 @@ function findParts(grid: string[][]) {
 
 function findPartsWithGear(grid: string[][]) {
   let parts = [];
+  const checkfn = function (x: number, y: number) {
+    return grid[x][y] === "*";
+  };
+
   for (let r = 0; r < grid.length; r++) {
     let row = [...grid[r]];
     //row init
@@ -81,12 +89,13 @@ function findPartsWithGear(grid: string[][]) {
       if (!isNaN(+value)) {
         let gearfound = null;
         partstring = partstring + value;
-        gearfound = checkForGear(c, r, grid);
+        //gearfound = checkForGear(c, r, grid, checkfn);
+        gearfound = checkSurrounding(c, r, grid, checkfn);
         let i = c + 1;
         while (i < row.length && !isNaN(+row[i])) {
           if (!isNaN(+row[i])) {
             partstring = partstring + row[i];
-            let cg = checkForGear(c + 1, r, grid);
+            let cg = checkSurrounding(c + 1, r, grid, checkfn);
             if (cg && !gearfound) {
               gearfound = cg;
             }
@@ -105,112 +114,47 @@ function findPartsWithGear(grid: string[][]) {
   return parts;
 }
 
-function checkSurrounding(c: number, r: number, grid: string[][]) {
-  let symbolfound = false;
-
+function checkSurrounding(c: number, r: number, grid: string[][], checkfn: Function) {
+  let result = null;
   //lt
   if (r > 0 && c > 0) {
-    if (isNaN(+grid[r - 1][c - 1]) && grid[r - 1][c - 1] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r - 1, c - 1, checkfn, result);
   }
   //mt
   if (r > 0) {
-    if (isNaN(+grid[r - 1][c]) && grid[r - 1][c] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r - 1, c, checkfn, result);
   }
   //rt
   if (r > 0 && c < grid[0].length - 1) {
-    if (isNaN(+grid[r - 1][c + 1]) && grid[r - 1][c + 1] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r - 1, c + 1, checkfn, result);
   }
   //lm
   if (c > 0) {
-    if (isNaN(+grid[r][c - 1]) && grid[r][c - 1] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r, c - 1, checkfn, result);
   }
   //rm
   if (c < grid[0].length - 1) {
-    if (isNaN(+grid[r][c + 1]) && grid[r][c + 1] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r, c + 1, checkfn, result);
   }
   //bl
   if (r < grid.length - 1 && c > 0) {
-    if (isNaN(+grid[r + 1][c - 1]) && grid[r + 1][c - 1] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r + 1, c - 1, checkfn, result);
   }
   //bm
   if (r < grid.length - 1) {
-    if (isNaN(+grid[r + 1][c]) && grid[r + 1][c] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r + 1, c, checkfn, result);
   }
   //br
   if (r < grid.length - 1 && c < grid[0].length - 1) {
-    if (isNaN(+grid[r + 1][c + 1]) && grid[r + 1][c + 1] !== ".") {
-      symbolfound = true;
-    }
+    result = check(r + 1, c + 1, checkfn, result);
   }
 
-  return symbolfound;
+  return result;
 }
 
-function checkForGear(c: number, r: number, grid: string[][]) {
-  let gearposition = null;
-
-  //lt
-  if (r > 0 && c > 0) {
-    if (grid[r - 1][c - 1] === "*") {
-      gearposition = (r - 1).toString() + (c - 1).toString();
-    }
+function check(x: number, y: number, fn: Function, current: any) {
+  if (fn(x, y)) {
+    return x.toString() + y.toString();
   }
-  //mt
-  if (r > 0) {
-    if (grid[r - 1][c] === "*") {
-      gearposition = (r - 1).toString() + c.toString();
-    }
-  }
-  //rt
-  if (r > 0 && c < grid[0].length - 1) {
-    if (grid[r - 1][c + 1] === "*") {
-      gearposition = (r - 1).toString() + (c + 1).toString();
-    }
-  }
-  //lm
-  if (c > 0) {
-    if (grid[r][c - 1] === "*") {
-      gearposition = r.toString() + (c - 1).toString();
-    }
-  }
-  //rm
-  if (c < grid[0].length - 1) {
-    if (grid[r][c + 1] === "*") {
-      gearposition = r.toString() + (c + 1).toString();
-    }
-  }
-  //bl
-  if (r < grid.length - 1 && c > 0) {
-    if (grid[r + 1][c - 1] === "*") {
-      gearposition = (r + 1).toString() + (c - 1).toString();
-    }
-  }
-  //bm
-  if (r < grid.length - 1) {
-    if (grid[r + 1][c] === "*") {
-      gearposition = (r + 1).toString() + c.toString();
-    }
-  }
-  //br
-  if (r < grid.length - 1 && c < grid[0].length - 1) {
-    if (grid[r + 1][c + 1] === "*") {
-      gearposition = (r + 1).toString() + (c + 1).toString();
-    }
-  }
-
-  return gearposition;
+  return current;
 }
