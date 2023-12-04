@@ -2,7 +2,11 @@
     "compilerOptions": {
       "target": "ES2022",
       "module": "CommonJS",
-      "sourceMap": true
+      "sourceMap": true,
+      "types": [
+        // ... other types
+        "node"
+      ]
     },
     "compileOnSave": true
   }
