@@ -11,18 +11,16 @@ console.log(`Part 2 solution: ${solve2(input)}`);
 function solve1(lines: string[], product = 1) {
   const races = parse(lines);
   races.forEach((race) => {
-    let amount = getAmountofSolutions(race[0], race[1]);
-    product = product * amount;
+    product = product * getAmountofSolutions(race[0], race[1]);
   });
 
   return product;
 }
 
-function solve2(lines: string[], product = 0) {
-  let time = +lines[0].replaceAll(" ", "").replace("Time:", "");
-  let distance = +lines[1].replaceAll(" ", "").replace("Distance:", "");
-  let amount = getAmountofSolutions(time, distance);
-  return amount;
+function solve2(lines: string[]) {
+  const time = +lines[0].replaceAll(" ", "").replace("Time:", "");
+  const distance = +lines[1].replaceAll(" ", "").replace("Distance:", "");
+  return getAmountofSolutions(time, distance);
 }
 
 function getAmountofSolutions(time: number, distance: number) {
