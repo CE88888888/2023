@@ -13,15 +13,15 @@ function solve(lines: string[], sum: number, withJoker: boolean) {
   lines.forEach((line) => {
     let h: Hand = {
       cards: line.split(" ")[0],
-      rank: +line.split(" ")[1],
-      bid: "",
+      bid: +line.split(" ")[1],
+      score: "",
     };
-    h.bid = calcScore(h.cards, withJoker);
+    h.score = calcScore(h.cards, withJoker);
     arr.push(h);
   });
 
   sortCards(arr, withJoker).forEach((h) => {
-    sum = sum + h.rank * (arr.indexOf(h) + 1);
+    sum = sum + h.bid * (arr.indexOf(h) + 1);
   });
 
   return sum;
@@ -29,8 +29,8 @@ function solve(lines: string[], sum: number, withJoker: boolean) {
 
 type Hand = {
   cards: string;
-  rank: number;
-  bid: string;
+  bid: number;
+  score: string;
 };
 
 function calcScore(c: string, withJoker: boolean) {
@@ -111,7 +111,7 @@ function calcScore(c: string, withJoker: boolean) {
 
 function sortCards(arr: Hand[], joker: boolean) {
   arr.sort((n1, n2) => {
-    if (getHandRank(n1.bid) === getHandRank(n2.bid)) {
+    if (getHandRank(n1.score) === getHandRank(n2.score)) {
       let m1 = [...n1.cards];
       let m2 = [...n2.cards];
       for (let i = 0; i < m1.length; i++) {
@@ -123,7 +123,7 @@ function sortCards(arr: Hand[], joker: boolean) {
         }
       }
     }
-    return getHandRank(n1.bid) - getHandRank(n2.bid);
+    return getHandRank(n1.score) - getHandRank(n2.score);
   });
   return arr;
 }
