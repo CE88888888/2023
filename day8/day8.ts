@@ -22,7 +22,7 @@ function solve1(lines: string[], sum = 0) {
 function solve2(lines: string[], sum = 0) {
   let ins = lines[0];
   let maparr = lines.slice(2);
-  let maps, cm = [];
+  let maps = [], cm = [];
   maparr.forEach((m) => maps.push(parse(m)));
 
   maps.forEach((m) => {
