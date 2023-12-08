@@ -4,34 +4,24 @@ import { lcm } from "../helper/crt";
 const example: string[] = getExampleInput(__dirname);
 const input: string[] = getPuzzleInput(__dirname);
 
-console.log(`Part 1 example: ${solve1(example)}`);
+//console.log(`Part 1 example: ${solve1(example)}`);
 console.log(`Part 1 solution: ${solve1(input)}`);
 console.log(`Part 2 example: ${solve2(example)}`);
 console.log(`Part 2 solution: ${solve2(input)}`);
 
 function solve1(lines: string[], sum = 0) {
   let ins = lines[0];
-  let maparr = lines.slice(2);
-  let maps = [];
-  maparr.forEach((m) => maps.push(parse(m)));
-  sum = getEnd(ins, maps, "AAA", false);
+  let maps = lines.slice(2).map((m) => parse(m));
 
-  return sum;
+  return getEnd(ins, maps, "AAA", false);
 }
 
 function solve2(lines: string[], sum = 0) {
   let ins = lines[0];
-  let maparr = lines.slice(2);
-  let maps = [], cm = [];
-  maparr.forEach((m) => maps.push(parse(m)));
+  let maps = lines.slice(2).map((m) => parse(m));
+  let cm = maps.filter((m) => m[0].indexOf("A") >= 0);
 
-  maps.forEach((m) => {
-    if (m[0].indexOf("A") >= 0) {
-      cm.push([m[0], 0]);
-    }
-  });
-
-  let result = cm.map((x) => (x[1] = getEnd(ins, maps, x[0], true)));
+  let result = cm.map((x) => getEnd(ins, maps, x[0], true));
   sum = result.reduce((acc, x) => lcm(acc, x));
 
   return sum;
@@ -75,5 +65,3 @@ function parse(s: string) {
     .replaceAll("=", ",")
     .split(",");
 }
-
-
