@@ -22,10 +22,9 @@ function solve1(lines: string[], sum = 0) {
 function solve2(lines: string[], sum = 0) {
   let ins = lines[0];
   let maparr = lines.slice(2);
-  let maps = [];
+  let maps, cm = [];
   maparr.forEach((m) => maps.push(parse(m)));
 
-  let cm = [];
   maps.forEach((m) => {
     if (m[0].indexOf("A") >= 0) {
       cm.push([m[0], 0]);
@@ -33,7 +32,7 @@ function solve2(lines: string[], sum = 0) {
   });
 
   let result = cm.map((x) => (x[1] = getEnd(ins, maps, x[0], true)));
-  sum = result.reduce((acc, x) => lcm(acc, x), 1);
+  sum = result.reduce((acc, x) => lcm(acc, x));
 
   return sum;
 }
