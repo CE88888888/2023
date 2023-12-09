@@ -1,0 +1,16 @@
+include(pwd() * "\\helper\\inputs.jl")
+example = getExample(@__DIR__)
+input = getInput(@__DIR__)
+
+function part1(lines)
+
+end
+
+function part2(lines)
+
+end
+
+println("Part 1 example : $(part1(example))")
+println("Part 1 solution: $(part1(input))")
+println("Part 2 example : $(part2(example))")
+println("Part 2 solution: $(part2(input))")
