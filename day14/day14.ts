@@ -25,13 +25,14 @@ function solve1(lines: string[], sum = 0) {
 function solve2(lines: string[], weight = 0) {
   const grid = lines.map((x) => [...x]);
   const l = grid.length;
-  let flat = grid.flat(2).toString();
+  let flat = grid.map(x => x.join("")).join("|")
 
   let resultcache = new Map<string, Result>();
   let ring = [];
   let ringnotfound = true;
 
-  for (let i = 0; i < 400; i++) {
+  //Brute force is actually possible in ~21 minutes.
+  for (let i = 0; i < 2000; i++) {
     const cachedresult = resultcache.get(flat);
     if (cachedresult !== undefined) {
       flat = resultcache.get(flat).grid;
@@ -59,7 +60,7 @@ function solve2(lines: string[], weight = 0) {
     }
   }
 
-  const ringlength = 400 % ring.length;
+  const ringlength = 2000 % ring.length;
   const offset = ring.indexOf(weight) - ringlength;
   const result = ((1000000000 % ring.length) + offset) % ring.length;
   return ring[result];
@@ -71,7 +72,7 @@ function cycleFlat(flatgrid: string, l: number) {
   grid = tiltW(grid);
   grid = tiltS(grid);
   grid = tiltE(grid);
-  return grid.flat(2).toString();
+  return grid.map(x => x.join("")).join("|")
 }
 
 function countweightFlat(flatgrid: string, l: number) {
@@ -81,9 +82,7 @@ function countweightFlat(flatgrid: string, l: number) {
 
 function rebuildGrid(l: number, flatgrid: string) {
   let grid: string[][] = [];
-  for (let i = 0; i < l; i = i + 1) {
-    grid.push(flatgrid.slice(i * 2 * l, i * 2 * l + 2 * l - 1).split(","));
-  }
+  grid = flatgrid.split("|").map(x => x.split(""))
   return grid;
 }
 
