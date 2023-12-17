@@ -1,3 +1,4 @@
+import PriorityQueue from "ts-priority-queue";
 import { getExampleInput, getPuzzleInput } from "../helper/inputs";
 
 const example: string[] = getExampleInput(__dirname);
@@ -6,11 +7,7 @@ const input: string[] = getPuzzleInput(__dirname);
 console.log(`Part 1 example: ${solve1(example)}`);
 console.log(`Part 1 solution: ${solve1(input)}`);
 console.log(`Part 2 example: ${solve2(example)}`);
-// console.log(`Part 2 solution: ${solve2(input)}`);
-const t0 = performance.now();
 console.log(`Part 2 solution: ${solve2(input)}`);
-const t1 = performance.now();
-console.log(`Call to Solve 2 took ${t1 - t0} milliseconds.`);
 
 type Point = {
   d: number;
@@ -36,17 +33,19 @@ function shortestPath(grid: number[][], minSeq: number, maxSeq: number) {
   const boundy = grid.length - 1;
   let result = 0;
   let start1: Point = np(0, 0, 0, 0, 1, 0);
-  let start2: Point = np(0, 0, 0, 1, 0, 0);
-  let pqueue: Point[] = [start1, start2];
   let visited = new Set<string>();
+  let queue = new PriorityQueue({
+    comparator: function (a: Point, b: Point) {
+      return a.d - b.d;
+    },
+  });
+  queue.queue(start1);
 
-  while (pqueue.length > 0) {
-    const p = pqueue.shift();
+  while (queue.length > 0) {
+    const p = queue.dequeue();
 
     if (p.x === boundx && p.y === boundy && p.seq > minSeq) {
       result = p.d;
-      console.log("end found", pqueue.length);
-      console.log(p);
       break;
     }
 
@@ -56,13 +55,11 @@ function shortestPath(grid: number[][], minSeq: number, maxSeq: number) {
     }
     visited.add(hash);
 
-    let next = [];
-
     if (p.seq < maxSeq) {
       let nx = p.x + p.xdir;
       let ny = p.y + p.ydir;
       if (nx >= 0 && nx <= boundx && ny >= 0 && ny <= boundy) {
-        pqueue.push(np(p.d + grid[ny][nx], ny, nx, p.ydir, p.xdir, p.seq + 1))
+        queue.queue(np(p.d + grid[ny][nx], ny, nx, p.ydir, p.xdir, p.seq + 1));
       }
     }
 
@@ -71,11 +68,11 @@ function shortestPath(grid: number[][], minSeq: number, maxSeq: number) {
         let nx = p.x;
         let ny = p.y + 1;
         if (nx >= 0 && nx <= boundx && ny >= 0 && ny <= boundy) {
-          pqueue.push(np(p.d + grid[ny][nx], ny, p.x, p.ydir + 1, 0, 1))
+          queue.queue(np(p.d + grid[ny][nx], ny, p.x, p.ydir + 1, 0, 1));
         }
         ny = p.y - 1;
         if (nx >= 0 && nx <= boundx && ny >= 0 && ny <= boundy) {
-          pqueue.push(np(p.d + grid[ny][nx], ny, p.x, p.ydir - 1, 0, 1))
+          queue.queue(np(p.d + grid[ny][nx], ny, p.x, p.ydir - 1, 0, 1));
         }
       }
 
@@ -83,35 +80,14 @@ function shortestPath(grid: number[][], minSeq: number, maxSeq: number) {
         let ny = p.y;
         let nx = p.x - 1;
         if (nx >= 0 && nx <= boundx && ny >= 0 && ny <= boundy) {
-          pqueue.push(np(p.d + grid[ny][nx], ny, nx, 0, p.xdir - 1, 1))
+          queue.queue(np(p.d + grid[ny][nx], ny, nx, 0, p.xdir - 1, 1));
         }
         nx = p.x + 1;
         if (nx >= 0 && nx <= boundx && ny >= 0 && ny <= boundy) {
-          pqueue.push(np(p.d + grid[ny][nx], ny, p.x + 1, 0, p.xdir + 1, 1))
+          queue.queue(np(p.d + grid[ny][nx], ny, p.x + 1, 0, p.xdir + 1, 1));
         }
       }
     }
-
-    pqueue.sort((x1, x2) => {
-      if (x1.d > x2.d) {
-        return 1;
-      }
-      if (x1.d < x2.d) {
-        return -1;
-      }
-
-      if (x1.d === x2.d) {
-        if (x1.seq < x2.seq) {
-          return -1;
-        }
-        if (x1.seq > x2.seq) {
-          return 1;
-        }
-      }
-
-      return 0;
-    });
-
   }
   return result;
 }

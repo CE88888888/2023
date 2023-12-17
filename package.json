@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/node": "^20.10.3"
+  },
+  "dependencies": {
+    "ts-priority-queue": "^0.1.1"
   }
 }
